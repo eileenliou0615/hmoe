@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>轉轉輪盤</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <style media="screen">
+        #fb-btn{margin-top: 10px;}
+        #profile,#logout,#feed {display: none;}
+    </style>
+</head>
+<body>
+    
+    <script>
+        window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '1710904765786739',
+            cookie     : true,
+            xfbml      : true,
+            version    : 'v11.0'
+        });
+            
+        FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+        });
+            
+        };
+    
+        (function(d, s, id){
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {return;}
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+        function statusChangeCallback(response){
+            if(response.status === 'connected' ){
+                setElements(true);
+                testAPI();
+                console.log('Logged in and authenticated');
+            } else {
+                setElements(false);
+                console.log('Not authenticated');
+            }
+        }
+
+        function checkLoginState() {
+            FB.getLoginStatus(function(response) {
+                statusChangeCallback(response);
+            });
+        }
+
+        function testAPI(){
+            FB.api('/me?fields=name,email,picture',function(response){
+                if(response && !response.error){
+                    console.log(response);
+                    buildProfile(response);
+                }
+            })
+        }
+
+        function buildProfile(user){
+            let profile = `
+                <h3>${user.name}</h3>
+                <ul class="list-group">
+                    <li class="list-group-item">Email: ${user.email}</li>
+                    <img src="${user.picture.data.url}" alt="Girl in a jacket" width="${user.picture.data.width}" height="${user.picture.data.height}">
+                    <li class="list-group-item">picture: </li>
+                </ul>
+            `
+
+            document.getElementById('profile').innerHTML = profile;
+        }
+
+        function buildFeed(user){
+            let output = '<h3>Latest Posts</h3>';
+            for(let i in feed.data){
+                if(feed.data[i].message){
+                    output += '<div class="wall">${feed.data[i].message}</div>'
+                }
+            }
+
+            document.getElementById('feed').innerHTML = profile;
+        }
+
+        function setElements(isLoggedIn){
+            if(isLoggedIn){
+                document.getElementById('logout').style.display = 'block';
+                document.getElementById('profile').style.display = 'block';
+                // document.getElementById('feed').style.display = 'block';
+                document.getElementById('fb-btn').style.display = 'none';
+                document.getElementById('heading').style.display = 'none';
+            }
+            else
+            {
+                document.getElementById('logout').style.display = 'none';
+                document.getElementById('profile').style.display = 'none';
+                // document.getElementById('feed').style.display = 'none';
+                document.getElementById('fb-btn').style.display = 'block';
+                document.getElementById('heading').style.display = 'block';
+            }
+        }
+
+        function logout(){
+            FB.logout(function(response){
+                setElements(false);
+            })
+        }
+    </script>
+<!-- 導航條 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+        <a class="navbar-brand" href="#">轉轉輪盤</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+                
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Dropdown
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            </li>
+            <li class="nav-item">
+                <a id="logout" class="nav-link"  href="#" onclick="logout()">Logout</a>
+            </li>
+            <fb:login-button 
+                id="fb-btn"
+                scope="public_profile,email"
+                onlogin="checkLoginState();">
+            </fb:login-button>
+            </ul>
+        </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h3 id="heading">Log in to view your profile</h3>
+        <div id="profile"></div>
+        <div id="feed"></div>
+    </div>
+    
+
+</body>
+</html>
