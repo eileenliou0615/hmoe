@@ -78,7 +78,7 @@
         function ConfirmProfile(user){
             let profile = `
                 <div>【 ${user.name} 】這是你的名字嗎? </div>
-                <a class="nav-link"  href="#" onclick="APIToGetPic()">確定</a>
+                <a class="nav-link"  href="#" onclick="${APIToGetPic()}">確定</a>
             `
 
             document.getElementById('profile').innerHTML = profile;
