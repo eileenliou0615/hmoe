@@ -53,36 +53,34 @@
             });
         }
 
-        let user;
         function APIToGetUser(){
             FB.api('/me?fields=id,name,email,picture',function(response){
                 if(response && !response.error){
                     console.log(response);
                     //buildProfile(response);
-                    user = response;
-                    ConfirmProfile(response);
+                    buildProfile(response);
                 }
             })
             
         }
 
-        function APIToGetPic(){
-            FB.api('/'+user.id+'/picture',function(response){
-                if(response && !response.error){
-                    console.log(response);
-                    buildProfile(response);
-                }
-            })
-        }
+        // function APIToGetPic(){
+        //     FB.api('/'+user.id+'/picture',function(response){
+        //         if(response && !response.error){
+        //             console.log(response);
+        //             buildProfile(response);
+        //         }
+        //     })
+        // }
 
-        function ConfirmProfile(user){
-            let profile = `
-                <div>【 ${user.name} 】這是你的名字嗎? </div>
-                <a class="nav-link"  href="#" onclick="${APIToGetPic()}">確定</a>
-            `
+        // function ConfirmProfile(user){
+        //     let profile = `
+        //         <div>【 ${user.name} 】這是你的名字嗎? </div>
+        //         <a class="nav-link"  href="#" onclick="${APIToGetPic()}">確定</a>
+        //     `
 
-            document.getElementById('profile').innerHTML = profile;
-        }
+        //     document.getElementById('profile').innerHTML = profile;
+        // }
         
 
         function buildProfile(pic){
@@ -90,7 +88,7 @@
                 <h3>${user.name}</h3>
                 <ul class="list-group">
                     <li class="list-group-item">Email: ${user.email}</li>
-                    <img src="${pic.data.url}" alt="Girl in a jacket" width="${pic.data.width}" height="${pic.data.height}">
+                    <img src="${user.data.url}" alt="Girl in a jacket" width="${user.data.width}" height="${user.data.height}">
                     <li class="list-group-item">picture: </li>
                 </ul>
             `
